@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 from data_loader import load_pv_data
-from feature_engineering import create_features
+from feature_engineering import add_derived_features
 from feature_selection import reptile_search_algorithm
 
 def train_and_evaluate_classifier(X, y, selected_idx, test_size=0.2, random_state=42):
@@ -14,7 +14,7 @@ def train_and_evaluate_classifier(X, y, selected_idx, test_size=0.2, random_stat
     X_selected = X[:, selected_idx]
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X_selected, y, test_size=test_size, random_state=random_state, stratify=y
+        X_selected, y, test_size=test_size, random_state=random_state
     )
 
     clf = RandomForestClassifier(n_estimators=100, random_state=random_state)
