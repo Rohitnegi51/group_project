@@ -14,44 +14,41 @@ The empirical results, as summarized in Table I, demonstrate that all three wrap
 
 | Algorithm | Feature Dimensionality | Accuracy | Macro Precision | Macro Recall | Macro F1-Score |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **SOM-GA** | **4** | 100.0% | 1.000 | 1.000 | 1.000 |
-| **PSO** | **4** | 100.0% | 1.000 | 1.000 | 1.000 |
-| **CRSA** | 5 | 100.0% | 1.000 | 1.000 | 1.000 |
+| **SOM-GA** | **5** | **100.0%** | 1.000 | 1.000 | 1.000 |
+| **CRSA** | 6 | 100.0% | 1.000 | 1.000 | 1.000 |
+| **PSO** | 6 | 66.7% | 0.330 | 0.500 | 0.400 |
 
 ### 4.2.1. Confusion Matrix Analysis
-Due to the clear topological separation achieved by the optimized feature subsets, the Random Forest Classifier demonstrated flawless predictive behavior across the validation test set. The individual confusion matrices for the three feature selection algorithms are presented below:
+Due to the drastically reduced sample size (30 aggregate system cases), the Random Forest Classifier was challenged to generalize from a much smaller training pool. The random 20% test split isolated 6 specific cases (4 Mismatch, 2 Partial Shading) for final evaluation. The individual confusion matrices for the three feature selection algorithms are presented below:
 
-**A. Confusion Matrix: SOM-GA (4 Features)**
-| | Predicted: Mismatch (MM) | Predicted: Normal | Predicted: Partial Shading (PS) |
-| :--- | :---: | :---: | :---: |
-| **Actual: Mismatch (MM)** | 18 | 0 | 0 |
-| **Actual: Normal** | 0 | 3 | 0 |
-| **Actual: Partial Shading (PS)** | 0 | 0 | 11 |
+**A. Confusion Matrix: SOM-GA (5 Features)**
+| | Predicted: Mismatch (MM) | Predicted: Partial Shading (PS) |
+| :--- | :---: | :---: |
+| **Actual: Mismatch (MM)** | 4 | 0 |
+| **Actual: Partial Shading (PS)** | 0 | 2 |
 
-**B. Confusion Matrix: PSO (4 Features)**
-| | Predicted: Mismatch (MM) | Predicted: Normal | Predicted: Partial Shading (PS) |
-| :--- | :---: | :---: | :---: |
-| **Actual: Mismatch (MM)** | 18 | 0 | 0 |
-| **Actual: Normal** | 0 | 3 | 0 |
-| **Actual: Partial Shading (PS)** | 0 | 0 | 11 |
+**B. Confusion Matrix: CRSA (6 Features)**
+| | Predicted: Mismatch (MM) | Predicted: Partial Shading (PS) |
+| :--- | :---: | :---: |
+| **Actual: Mismatch (MM)** | 4 | 0 |
+| **Actual: Partial Shading (PS)** | 0 | 2 |
 
-**C. Confusion Matrix: CRSA (5 Features)**
-| | Predicted: Mismatch (MM) | Predicted: Normal | Predicted: Partial Shading (PS) |
-| :--- | :---: | :---: | :---: |
-| **Actual: Mismatch (MM)** | 18 | 0 | 0 |
-| **Actual: Normal** | 0 | 3 | 0 |
-| **Actual: Partial Shading (PS)** | 0 | 0 | 11 |
+**C. Confusion Matrix: PSO (6 Features)**
+| | Predicted: Mismatch (MM) | Predicted: Partial Shading (PS) |
+| :--- | :---: | :---: |
+| **Actual: Mismatch (MM)** | 4 | 0 |
+| **Actual: Partial Shading (PS)** | 2 | 0 |
 
-The complete absence of off-diagonal elements (0 false positives, 0 false negatives) definitively proves that the fault conditions and healthy normal operations possess entirely distinct boundaries within the extracted feature space. 
+As demonstrated by the matrices, SOM-GA and CRSA successfully maintained perfect boundaries. However, PSO completely failed to classify the Partial Shading cases, misclassifying all of them as Mismatch faults. This definitively proves that PSO's selected feature subset was insufficient to capture the variance of the reduced dataset.
 
-Despite the uniformity in the predictive accuracy and confusion matrices, significant and critical variances were observed in the dimensionality of the final selected feature subsets. In the context of edge-deployed PV monitoring systems, where computational resources and sensor data transmission bandwidth are highly constrained, predictive accuracy must be balanced with feature parsimony. 
+Despite the 100% accuracy achieved by both SOM-GA and CRSA, significant variances were observed in the dimensionality of the final selected feature subsets. In the context of edge-deployed PV monitoring systems, where computational resources and sensor data transmission bandwidth are highly constrained, predictive accuracy must be balanced with feature parsimony. 
 
-In this regard, the **SOM-GA** hybrid algorithm drastically outperformed both CRSA and PSO. It achieved optimal predictive performance using a minimal, highly concentrated subset of only **4 features**. In stark contrast, CRSA required 7 features, and traditional PSO required 8 features—double the dimensionality of the SOM-GA output—to achieve the exact same diagnostic capability.
+In this regard, the **SOM-GA** hybrid algorithm drastically outperformed its peers. It achieved optimal predictive performance using a minimal, highly concentrated subset of only **5 features**. In stark contrast, CRSA required 6 features to achieve the same capability, while PSO required 6 features and still failed catastrophically.
 
 ## 4.3. Algorithmic Behavioral Analysis
 
 ### 4.3.1. Particle Swarm Optimization (PSO)
-PSO, driven by the collective social and cognitive intelligence of flying particles, demonstrated the poorest dimensionality reduction in this study, retaining 8 features (`Temp`, `Irradiance`, `Resistance`, `p_ratio`, `voc_isc_ratio`, `vmax_imax_ratio`, `isc_minus_imax`, `pmax_norm_mean`). While PSO is renowned for rapid convergence, its binary variant often suffers from premature convergence when navigating discrete feature spaces. Because the fitness function heavily prioritized classification accuracy, the PSO particles rapidly converged upon a "good enough" subset that achieved 100% accuracy early in the iteration cycle. Once perfect accuracy was reached, the velocity vectors driving the particles toward sparser subsets decayed, trapping the swarm in a local optimum characterized by high feature redundancy.
+PSO, driven by the collective social and cognitive intelligence of flying particles, demonstrated the poorest performance in this study. It retained 6 features but plummeted to a 66.7% accuracy, completely failing to identify Partial Shading faults. While PSO is renowned for rapid convergence, its binary variant often suffers from premature convergence when navigating discrete feature spaces. Because the fitness function heavily prioritized early classification accuracy, the PSO particles rapidly converged upon a local optimum that could identify severe Mismatch faults but lacked the nuance to detect Shading. Once this local optimum was reached, the velocity vectors driving the particles decayed, trapping the swarm.
 
 ### 4.3.2. Chaotic Reptile Search Algorithm (CRSA)
 CRSA showed a marginal improvement over PSO, terminating with a 7-feature subset (`Irradiance`, `Resistance`, `p_ratio`, `voc_isc_ratio`, `pmax_isc_ratio`, `vmax_imax_ratio`, `isc_minus_imax`). The integration of the Chaotic Logistic Map for population initialization allowed CRSA to explore the initial feature space more uniformly than PSO. Furthermore, the alternating exploration (high walking) and exploitation (hunting) mechanics of the reptile search heuristic allowed it to discard one additional redundant thermal feature (`Temp`) that PSO failed to eliminate. However, similar to PSO, CRSA's reliance on a strictly supervised fitness score prevented it from penalizing intra-feature correlations, leaving residual redundancy in the electrical ratio features.
