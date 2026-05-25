@@ -16,7 +16,7 @@ def main():
     print("\n--- Step 2: Feature Engineering ---")
     df_fe = add_derived_features(df)
 
-    output_cols = ['Pmax', 'Vmax', 'Imax', 'Voc', 'Isc', 'Label', 'Condition:(1PS)/(2MM)']
+    output_cols = ['Pmax', 'Vmax', 'Imax', 'Voc', 'Isc', 'Label', 'Condition:(1PS)/(2MM)/(3Normal)']
     input_cols = [col for col in df_fe.columns if col not in output_cols + ['Condition_ID', 'Condition_Name', 'Row', 'Col']]
 
     X = df_fe[input_cols].to_numpy()

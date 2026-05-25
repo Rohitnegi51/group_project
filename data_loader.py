@@ -20,17 +20,13 @@ def load_pv_data(file_path):
             )
 
         # Clean column name for fault label
-        fault_col = 'Condition:(1PS)/(2MM)'
+        fault_col = 'Condition:(1PS)/(2MM)/(3Normal)'
         if fault_col not in df.columns:
             raise ValueError(f"Column '{fault_col}' not found in dataset.")
 
         # Map the fault column to labels
-        label_map = {1: 'PS', 2: 'MM'}
+        label_map = {1: 'PS', 2: 'MM', 3: 'Normal'}
         df['Label'] = df[fault_col].map(label_map)
-
-        # Artificially inject 'Normal' class for testing pipeline
-        # Assigning it based on Condition_ID ensures the features are actually distinct
-        df.loc[df['Condition_ID'] <= 10, 'Label'] = 'Normal'
 
         if df['Label'].isnull().any():
             raise ValueError("Some rows have unknown or missing labels in fault column.")
