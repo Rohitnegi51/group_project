@@ -7,7 +7,7 @@ def load_pv_data(file_path):
     """
     try:
         df = pd.read_excel(file_path)
-        print("✅ Data loaded successfully!")
+        print(" Data loaded successfully!")
         print("Shape:", df.shape)
 
         # Columns that should be numeric
@@ -31,16 +31,16 @@ def load_pv_data(file_path):
         if df['Label'].isnull().any():
             raise ValueError("Some rows have unknown or missing labels in fault column.")
 
-        print("\n✅ Numeric columns cleaned.")
-        print("✅ Fault labels mapped. Sample:")
+        print("\n Numeric columns cleaned.")
+        print(" Fault labels mapped. Sample:")
         print(df[['Condition_ID', 'Condition_Name', fault_col, 'Label']].head())
         
-        print("\n✅ Numeric columns cleaned. Sample data:")
+        print("\n Numeric columns cleaned. Sample data:")
         print(df.head())
 
         return df
     except Exception as e:
-        print(f"❌ Failed to load data: {e}")
+        print(f" Failed to load data: {e}")
         return None
 
 if __name__ == "__main__":

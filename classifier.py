@@ -22,14 +22,14 @@ def train_and_evaluate_classifier(X, y, selected_idx, test_size=0.2, random_stat
 
     y_pred = clf.predict(X_test)
 
-    print("\n✅ Classification Report:")
+    print("\n Classification Report:")
     print(classification_report(y_test, y_pred))
 
-    print("\n📊 Confusion Matrix:")
+    print("\n Confusion Matrix:")
     print(confusion_matrix(y_test, y_pred))
 
     accuracy = clf.score(X_test, y_test)
-    print(f"\n🎯 Test Accuracy: {accuracy:.4f}")
+    print(f"\n Test Accuracy: {accuracy:.4f}")
 
     return clf
 

@@ -8,7 +8,7 @@ def add_derived_features(df):
     """
     Derive new features from existing output features and drop near-constant ones.
     """
-    print("\n🧪 Adding derived features...")
+    print("\n Adding derived features...")
 
     df['p_ratio'] = df['Pmax'] / (df['Vmax'] * df['Imax'])
     df['voc_vmax_ratio'] = df['Voc'] / df['Vmax']
@@ -42,7 +42,7 @@ def add_derived_features(df):
         else:
             print(f"⚠️ Dropping near-constant feature: {col} (std={std:.5f})")
 
-    print(f"\n✅ Derived features kept: {keep_cols}")
+    print(f"\n Derived features kept: {keep_cols}")
     return df
 
 def preprocess_pv_data(df):
