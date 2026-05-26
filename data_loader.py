@@ -44,17 +44,3 @@ def load_pv_data(file_path):
         print(f" Failed to load data: {e}")
         return None
 
-if __name__ == "__main__":
-    # For testing: update path to your Excel
-    file_path = "data/pv_data_sample.xlsx"
-    df = load_pv_data(file_path)
-
-    if df is not None:
-        print("\nUnique test conditions:")
-        print(df['Condition_Name'].unique())
-
-        print("\nAverage Pmax by Condition:")
-        print(df.groupby('Condition_Name')['Pmax'].mean())
-
-        print("\nData types after cleaning:")
-        print(df.dtypes)

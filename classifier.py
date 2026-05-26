@@ -51,20 +51,3 @@ def train_and_evaluate_classifier(X, y, selected_idx, test_size=0.2, random_stat
 
     return clf
 
-if __name__ == "__main__":
-    file_path = "../data/pv_data_sample.xlsx"
-    df = load_pv_data(file_path)
-    df_fe = create_features(df)
-
-    # Define input and output columns
-    output_cols = ['Pmax', 'Vmax', 'Imax', 'Voc', 'Isc']
-    input_cols = [col for col in df_fe.columns if col not in output_cols + ['Condition_ID', 'Condition_Name', 'Row', 'Col']]
-
-    X = df_fe[input_cols].to_numpy()
-    y = df_fe['Condition_ID'].to_numpy()
-
-    # Run feature selection
-    selected_idx = reptile_search_algorithm(X, y)
-
-    # Train and evaluate
-    clf = train_and_evaluate_classifier(X, y, selected_idx)
