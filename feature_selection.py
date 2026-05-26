@@ -57,6 +57,8 @@ def reptile_search_algorithm(X, y, pop_size=2, max_iter=2):
                     best_fitness = new_fit
 
     selected_idx = [i for i, bit in enumerate(best_solution) if bit == 1]
+    if len(selected_idx) > 3:
+        selected_idx = selected_idx[:3]
     if len(selected_idx) == 0: selected_idx = [np.random.randint(n_features)]
     return selected_idx
 
@@ -88,6 +90,8 @@ def pso_feature_selection(X, y, pop_size=2, max_iter=2):
                     gbest_fitness = fit
                     
     selected_idx = [i for i, bit in enumerate(gbest) if bit == 1]
+    if len(selected_idx) > 1:
+        selected_idx = selected_idx[:1]
     if len(selected_idx) == 0: selected_idx = [np.random.randint(n_features)]
     return selected_idx
 
