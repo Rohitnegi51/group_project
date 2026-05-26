@@ -19,13 +19,14 @@ def load_pv_data(file_path):
                 errors='coerce'
             )
 
-        # Clean column name for fault label
-        fault_col = 'Condition:(1PS)/(2MM)/(3Normal)'
-        if fault_col not in df.columns:
-            raise ValueError(f"Column '{fault_col}' not found in dataset.")
+        # Find the column containing 'Condition:' dynamically
+        fault_col = [col for col in df.columns if 'Condition:' in col]
+        if not fault_col:
+            raise ValueError("No column containing 'Condition:' found in dataset.")
+        fault_col = fault_col[0]
 
         # Map the fault column to labels
-        label_map = {1: 'PS', 2: 'MM', 3: 'Normal'}
+        label_map = {1: 'PS', 2: 'MM', 3: 'Normal', 4: 'CrossString'}
         df['Label'] = df[fault_col].map(label_map)
 
         if df['Label'].isnull().any():

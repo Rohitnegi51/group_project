@@ -16,8 +16,8 @@ def main():
     print("\n--- Step 2: Feature Engineering ---")
     df_fe = add_derived_features(df)
 
-    output_cols = ['Pmax', 'Vmax', 'Imax', 'Voc', 'Isc', 'Label', 'Condition:(1PS)/(2MM)/(3Normal)']
-    input_cols = [col for col in df_fe.columns if col not in output_cols + ['Condition_ID', 'Condition_Name', 'Row', 'Col']]
+    output_cols = ['Pmax', 'Vmax', 'Imax', 'Voc', 'Isc', 'Label']
+    input_cols = [col for col in df_fe.columns if col not in output_cols + ['Condition_ID', 'Condition_Name', 'Row', 'Col'] and 'Condition:' not in col]
 
     X = df_fe[input_cols].to_numpy()
     y = df_fe['Label'].to_numpy() # Target is 'Label' (PS, MM, Normal)

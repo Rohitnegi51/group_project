@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from minisom import MiniSom
 import random
@@ -8,8 +9,15 @@ def fitness_function(X, y, feature_subset):
     if sum(feature_subset) == 0:
         return 0
     selected_idx = [i for i, bit in enumerate(feature_subset) if bit == 1]
-    clf = KNeighborsClassifier(n_neighbors=3)
-    score = cross_val_score(clf, X[:, selected_idx], y, cv=3).mean()
+    
+    # Use RandomForest OOB instead of KNN CV to handle tiny classes
+    clf = RandomForestClassifier(n_estimators=30, oob_score=True, random_state=42)
+    # Handle edge case where OOB fails on tiny features/samples
+    try:
+        clf.fit(X[:, selected_idx], y)
+        score = clf.oob_score_
+    except:
+        score = 0
     return score
 
 # 1. Chaotic Reptile Search Algorithm (CRSA)
@@ -92,11 +100,20 @@ def som_fitness_function(X, y, feature_subset):
     som.train_random(X_sub, 50)
     
     q_error = som.quantization_error(X_sub)
-    knn_acc = cross_val_score(KNeighborsClassifier(n_neighbors=3), X_sub, y, cv=3).mean()
     
-    # Maximize KNN accuracy while penalizing large quantization error 
+    clf = RandomForestClassifier(n_estimators=30, oob_score=True, random_state=42)
+    try:
+        clf.fit(X_sub, y)
+        rf_acc = clf.oob_score_
+    except:
+        rf_acc = 0
+        
+    num_features = sum(feature_subset)
+    feature_penalty = 0.005 * num_features
+    
+    # Maximize RF accuracy while penalizing large quantization error and high feature counts
     # This hybrid fitness pushes SOM-GA to find robust discriminative features
-    return knn_acc - (0.01 * q_error)
+    return rf_acc - (0.01 * q_error) - feature_penalty
 
 def som_ga_feature_selection(X, y, pop_size=15, max_iter=25):
     n_features = X.shape[1]

@@ -13,9 +13,27 @@ def train_and_evaluate_classifier(X, y, selected_idx, test_size=0.2, random_stat
     """
     X_selected = X[:, selected_idx]
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X_selected, y, test_size=test_size, random_state=random_state
-    )
+    # Custom Stratified Split to handle tiny classes (e.g. Normal = 2)
+    X_train, X_test, y_train, y_test = [], [], [], []
+    np.random.seed(random_state)
+    for cls in np.unique(y):
+        idx = np.where(y == cls)[0]
+        np.random.shuffle(idx)
+        n_test = max(1, int(len(idx) * test_size))
+        if len(idx) == 1:
+            n_test = 0  # if only 1 sample exists, put it in train
+        test_idx = idx[:n_test]
+        train_idx = idx[n_test:]
+        
+        X_train.extend(X_selected[train_idx])
+        y_train.extend(y[train_idx])
+        X_test.extend(X_selected[test_idx])
+        y_test.extend(y[test_idx])
+        
+    X_train = np.array(X_train)
+    y_train = np.array(y_train)
+    X_test = np.array(X_test)
+    y_test = np.array(y_test)
 
     clf = RandomForestClassifier(n_estimators=100, random_state=random_state)
     clf.fit(X_train, y_train)
