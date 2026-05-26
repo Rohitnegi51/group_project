@@ -36,8 +36,7 @@ def load_pv_data(file_path):
         print(" Fault labels mapped. Sample:")
         print(df[['Condition_ID', 'Condition_Name', fault_col, 'Label']].head())
         
-        print("\n Numeric columns cleaned. Sample data:")
-        print(df.head())
+
 
         return df
     except Exception as e:

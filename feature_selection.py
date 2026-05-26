@@ -24,7 +24,7 @@ def fitness_function(X, y, feature_subset):
     return score - penalty
 
 # 1. Chaotic Reptile Search Algorithm (CRSA)
-def reptile_search_algorithm(X, y, pop_size=5, max_iter=5):
+def reptile_search_algorithm(X, y, pop_size=2, max_iter=2):
     n_features = X.shape[1]
     def logistic_map(size, x0=0.7, r=3.9):
         seq = np.zeros(size)
@@ -61,7 +61,7 @@ def reptile_search_algorithm(X, y, pop_size=5, max_iter=5):
     return selected_idx
 
 # 2. Particle Swarm Optimization (PSO)
-def pso_feature_selection(X, y, pop_size=5, max_iter=5):
+def pso_feature_selection(X, y, pop_size=2, max_iter=2):
     n_features = X.shape[1]
     particles = np.random.randint(2, size=(pop_size, n_features))
     velocities = np.random.uniform(-1, 1, size=(pop_size, n_features))
