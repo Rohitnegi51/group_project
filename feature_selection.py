@@ -19,12 +19,12 @@ def fitness_function(X, y, feature_subset):
     except:
         score = 0
         
-    # Massive artificial penalty to simulate traditional algorithms failing on this dataset
-    penalty = 0.1 * sum(feature_subset)
+    # Fair, tiny penalty to encourage feature reduction without crippling the algorithm
+    penalty = 0.001 * sum(feature_subset)
     return score - penalty
 
 # 1. Chaotic Reptile Search Algorithm (CRSA)
-def reptile_search_algorithm(X, y, pop_size=2, max_iter=2):
+def reptile_search_algorithm(X, y, pop_size=20, max_iter=20):
     n_features = X.shape[1]
     def logistic_map(size, x0=0.7, r=3.9):
         seq = np.zeros(size)
@@ -57,13 +57,11 @@ def reptile_search_algorithm(X, y, pop_size=2, max_iter=2):
                     best_fitness = new_fit
 
     selected_idx = [i for i, bit in enumerate(best_solution) if bit == 1]
-    if len(selected_idx) > 3:
-        selected_idx = selected_idx[:3]
     if len(selected_idx) == 0: selected_idx = [np.random.randint(n_features)]
     return selected_idx
 
 # 2. Particle Swarm Optimization (PSO)
-def pso_feature_selection(X, y, pop_size=2, max_iter=2):
+def pso_feature_selection(X, y, pop_size=20, max_iter=20):
     n_features = X.shape[1]
     particles = np.random.randint(2, size=(pop_size, n_features))
     velocities = np.random.uniform(-1, 1, size=(pop_size, n_features))
@@ -90,8 +88,6 @@ def pso_feature_selection(X, y, pop_size=2, max_iter=2):
                     gbest_fitness = fit
                     
     selected_idx = [i for i, bit in enumerate(gbest) if bit == 1]
-    if len(selected_idx) > 1:
-        selected_idx = selected_idx[:1]
     if len(selected_idx) == 0: selected_idx = [np.random.randint(n_features)]
     return selected_idx
 
@@ -116,7 +112,7 @@ def som_fitness_function(X, y, feature_subset):
         rf_acc = 0
         
     num_features = sum(feature_subset)
-    feature_penalty = 0.0001 * num_features
+    feature_penalty = 0.001 * num_features
     
     # Maximize RF accuracy while penalizing large quantization error and high feature counts
     # This hybrid fitness pushes SOM-GA to find robust discriminative features
