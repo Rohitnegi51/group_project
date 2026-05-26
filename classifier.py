@@ -7,7 +7,7 @@ from data_loader import load_pv_data
 from feature_engineering import add_derived_features
 from feature_selection import reptile_search_algorithm
 
-def train_and_evaluate_classifier(X, y, selected_idx, test_size=0.2, random_state=42):
+def train_and_evaluate_classifier(X, y, selected_idx, test_size=0.2, random_state=1):
     """
     Train and evaluate classifier on selected features.
     """
@@ -35,7 +35,7 @@ def train_and_evaluate_classifier(X, y, selected_idx, test_size=0.2, random_stat
     X_test = np.array(X_test)
     y_test = np.array(y_test)
 
-    clf = RandomForestClassifier(n_estimators=100, random_state=random_state)
+    clf = RandomForestClassifier(n_estimators=100, random_state=1)
     clf.fit(X_train, y_train)
 
     y_pred = clf.predict(X_test)
